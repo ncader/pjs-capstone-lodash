@@ -1,76 +1,100 @@
-const assert = {
-  testBlockTestCounts: {},
+const _ = {
 
-  beginTestBlock(testName) {
-    this.testBlockTestCounts[testName] = 0;
-    console.log(`${testName} Tests:`);
-    //console.group();
+  clamp(number, lower, upper){
+    var lowerClampedValue = Math.max(number, lower);
+   var clampedValue = Math.min(lowerClampedValue, upper);
+   return clampedValue;
   },
 
-  endTestBlock() {
-    //console.groupEnd();
+  inRange(number, start, end){
+    if(end === undefined){
+      end = start
+      start = 0
+    }
+    if(start > end){
+      var temp = end
+      end = start
+      start = temp
+    } var isInRange = start <= number && number < end
+    return isInRange
   },
 
-  terminateTestBlock() {
-    console.log('Terminating tests...');
-    this.endTestBlock();
+
+  words(string){
+    const words = string.split(' ');
+    return words;
   },
 
-  incrementTestNumber(testName) {
-    this.testBlockTestCounts[testName] += 1;
-    return this.testBlockTestCounts[testName];
+  pad(string, length){
+    if(string.length >= length){
+      return string;
+    };
+      const startPaddingLength = Math.floor((length - string.length)/ 2);
+      const endPaddingLength = length - string.length - startPaddingLength
+      const paddedString = ' '.repeat(startPaddingLength) + string + ' '.repeat(endPaddingLength);
+      return paddedString;
+
   },
 
-  exists(testName, functionString, value) {
-    const testNumber = this.incrementTestNumber(testName);
+  has(object, key){
+    var hasValue = object[key];
+    if(hasValue != undefined){
+      return true;
+    }return false;
+  },
 
-    if (value) {
-      console.log("\x1b[32m%s\x1b[0m", `${testNumber} - ${functionString} is defined - Passed!`);
-    } else {
-      console.log("\x1b[31m%s\x1b[0m", `${testNumber} - ${functionString} is defined - Failed: ${functionString} was not properly defined.`);
+  invert(object){
+    var invertedObj = {};
+    for (var key in object){
+      var originalValue = object[key];
+      invertedObj = {originalValue : key}
+    } return invertedObj;
+
+  },
+
+  findKey(object, predicate){
+    for (var key in object){
+      var value = object[key];
+      var predicateReturnValue = predicate(value);
+      if (predicateReturnValue){
+        return key;
+      };
+      undefined
+      return undefined;
     }
   },
 
-  equals(testName, description, functionString, actualValue, expectedValue) {
-    const testNumber = this.incrementTestNumber(testName);
-
-    if (actualValue === expectedValue) {
-      console.log("\x1b[32m%s\x1b[0m", `${testNumber} - ${description} - Passed!`);
-    } else {
-      console.log("\x1b[31m%s\x1b[0m", `${testNumber} - ${description} - Failed: ${functionString} returned ${actualValue} instead of ${expectedValue}.`);
+  drop(array, n){
+    if(n === undefined){
+      n = 1;
     }
+    let droppedArray = array.slice(n, array.length);
+    return droppedArray;
+
   },
 
-  arrayEquals(testName, description, functionString, actualValue, expectedValue) {
-    const testNumber = this.incrementTestNumber(testName);
-
-    if (arraysAreEqual(actualValue, expectedValue)) {
-      console.log("\x1b[32m%s\x1b[0m", `${testNumber} - ${description} - Passed!`);
-    } else {
-      console.log("\x1b[31m%s\x1b[0m", `${testNumber} - ${description} - Failed: ${functionString} returned ${arrayToString(actualValue)} instead of ${arrayToString(expectedValue)}.`);
-    }
+  dropWhile(array, predicate){
+    let dropNumber = array.findIndex((element, index) => {
+      return !(predicate(element, index, array));
+    });
+    let droppedArray = _.drop(array, dropNumber);
+    return droppedArray;
   },
-};
 
-function arrayToString(array) {
-  return `[ ${array.join(', ')} ]`;
-}
+  chunk(array, size){
+    if(size === undefined){
+      size = 1;
+    };
+    let arrayChunks = [];
+    for(let x = 0; x < array.length; x += size){
+      let arrayChunk = array.slice(x, x+size);
+      arrayChunks.push(arrayChunk);
+    } return arrayChunks
+  },
 
-function arraysAreEqual(array1, array2) {
-  const sortedArray2 = array2.sort();
-  return array1.length === array2.length &&
-      array1.sort().every((array1value, index) => {
-        array2Value = sortedArray2[index];
-        if (isArray(array1value) && isArray(array2Value)) {
-          return arraysAreEqual(array1value, array2Value);
-        } else {
-          return array1value === array2Value;
-        }
-      });
-}
+  };
 
-function isArray(array) {
-  return Object.prototype.toString.call(array) === '[object Array]';
-}
 
-module.exports = assert;
+
+// Do not write or modify code below this line.
+module.exports = _;
